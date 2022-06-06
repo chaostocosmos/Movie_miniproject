@@ -8,6 +8,7 @@ delete from actor ;
 delete from genre ;
 delete from movie ;
 delete from crew ;
+delete from crew ;
 
 insert into movie values(1, '범죄도시2', '마동석이대충깡패족치는내용', '2022-05-01', 8500000, 8.8, 'Korea');
 insert into movie values(2, '주라기월드:도미니언', '주인공이대충공룡족치는내용', '2022-05-02', 5500000, 8.1, 'America');
