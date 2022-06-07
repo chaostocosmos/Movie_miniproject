@@ -1,14 +1,3 @@
-delete from Review;
-delete from user_info ;
-delete from movie_actor ;
-delete from movie_crew ;
-delete from movie_genre ;
-delete from `user` ;
-delete from actor ;
-delete from genre ;
-delete from movie ;
-delete from crew ;
-delete from crew ;
 
 insert into movie values(1, '범죄도시2', '마동석이대충깡패족치는내용', '2022-05-01', 8500000, 8.8, 'Korea');
 insert into movie values(2, '주라기월드:도미니언', '주인공이대충공룡족치는내용', '2022-05-02', 5500000, 8.1, 'America');
@@ -30,6 +19,7 @@ insert into movie values(17,'범죄와의 전쟁', '학연지연혈연흡연 끝
 insert into movie values(18,'회사원', '평범한 킬러회사 퇴사기', '2012-10-11',	1110523 , 6.4, 'Korea');
 insert into movie values(19,'도둑들', '다이야털기', '2012-06-14',	12983821 , 9.3, 'Korea');
 
+select * from genre g ;
 
 insert into genre (name) values('코미디(Comedy)');
 insert into genre (name) values('멜로(Romance)');
@@ -173,3 +163,76 @@ insert into Review values(18,23,2,'류+류 = 2류 작품도 2류 엌ㅋㅋ');
 
 insert into movie_actor values(20,6);
 insert into movie_actor values(21,6);
+
+select * from movie_actor;
+select * from user_info ui ;
+select * from Movie_Crew;
+
+-- 참조테이블 raw data 갱신
+
+insert into Movie_Crew values (1,1);
+insert into Movie_Crew values (5,1);
+insert into Movie_Crew values (2,2);
+insert into Movie_Crew values (6,2);
+insert into Movie_Crew values (3,3);
+insert into Movie_Crew values (7,3);
+insert into Movie_Crew values (4,4);
+insert into Movie_Crew values (8,4);
+insert into Movie_Crew values (15,5);
+insert into Movie_Crew values (9,5);
+insert into Movie_Crew values (10,6);
+insert into Movie_Crew values (16,6);
+insert into Movie_Crew values (17,7);
+insert into Movie_Crew values (11,7);
+insert into Movie_Crew values (18,8);
+insert into Movie_Crew values (12,8);
+insert into Movie_Crew values (19,9);
+insert into Movie_Crew values (13,9);
+insert into Movie_Crew values (14,10);
+insert into Movie_Crew values (20,10);
+insert into Movie_Crew values (21,3);
+insert into Movie_Crew values (22,5);
+insert into Movie_Crew values (23,1);
+
+select * from movie_crew;
+insert into movie_actor(movie_id, actor_id) values(1,2);
+insert into movie_actor(movie_id, actor_id) values(1,5);
+insert into movie_actor(movie_id, actor_id) values(1,7);
+insert into movie_actor(movie_id, actor_id) values(2,8);
+insert into movie_actor(movie_id, actor_id) values(3,11);
+insert into movie_actor(movie_id, actor_id) values(4,10);
+insert into movie_actor(movie_id, actor_id) values(5,6);
+insert into movie_actor(movie_id, actor_id) values(6,8);
+insert into movie_actor(movie_id, actor_id) values(7,12);
+insert into movie_actor(movie_id, actor_id) values(8,9);
+insert into movie_actor(movie_id, actor_id) values(8,12);
+insert into movie_actor(movie_id, actor_id) values(9,3);
+insert into movie_actor(movie_id, actor_id) values(10,1);
+insert into movie_actor(movie_id, actor_id) values(11,1);
+insert into movie_actor(movie_id, actor_id) values(12,1);
+insert into movie_actor(movie_id, actor_id) values(13,1);
+insert into movie_actor(movie_id, actor_id) values(14,1);
+
+
+select * from movie_actor;
+insert into user_info values(1,8);
+insert into user_info values(2,1);
+insert into user_info values(3,4);
+insert into user_info values(4,4);
+insert into user_info values(5,3);
+insert into user_info values(6,5);
+insert into user_info values(7,14);
+insert into user_info values(8,12);
+insert into user_info values(9,13);
+insert into user_info values(10,7);
+insert into user_info values(11,17);
+insert into user_info values(12,18);
+insert into user_info values(13,15);
+insert into user_info values(14,6);
+insert into user_info values(15,2);
+insert into user_info values(16,16);
+insert into user_info values(17,9);
+insert into user_info values(18,10);
+insert into user_info values(19,11);
+insert into user_info values(20,4);
+select * from user_info;
