@@ -158,3 +158,18 @@ commit;
 ALTER TABLE crew AUTO_INCREMENT=1;
 SET @COUNT = 0;
 UPDATE crew SET id = @COUNT:=@COUNT+1;
+
+
+-- 쿼리문 사용에 필요한 내용 추가합니다 ( 진원 ) 
+insert into movie values(20,'내부자들', '이병헌과조승우가악당들조지는내용', '2015-11-14',	7072507 , 9.3, 'Korea');
+insert into movie values(21,'자전차왕엄복동', '비가자전거뽀려서친일파조지는내용', '2019-10-04',	170000 , 10, 'Korea');
+insert into movie values(22,'부당거래', '호이가계속되면둘리인줄알아요', '2016-02-04',	9954358 , 8, 'Korea');
+insert into movie values(23,'죽거나혹은나쁘거나', '나쁜게 낫지그래도?', '2019-02-04',	912345 , 7, 'Korea');
+
+insert into Review values(18,22,2,'류+류 = 2류 작품도 2류 엌ㅋㅋ');
+insert into Review values(18,22,2,'류+류 = 2류 작품도 2류 엌ㅋㅋ');
+insert into Review values(18,23,2,'류+류 = 2류 작품도 2류 엌ㅋㅋ');
+insert into Review values(18,23,2,'류+류 = 2류 작품도 2류 엌ㅋㅋ');
+
+insert into movie_actor values(20,6);
+insert into movie_actor values(21,6);
