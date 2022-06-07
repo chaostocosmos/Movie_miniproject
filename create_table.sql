@@ -165,7 +165,7 @@ ALTER TABLE Review ADD CONSTRAINT FK_Movie_TO_Review_1 FOREIGN KEY (
 )
 REFERENCES Movie (
 	id
-);
+)ON DELETE CASCADE ON UPDATE CASCADE;
 
 desc review;
 
@@ -271,3 +271,108 @@ REFERENCES Genre (
 
 -- 수정완료
 
+-- 트리거, 프로시저 추가
+
+-- 유저 백업
+-- backup_user table 생성
+drop table if exists backup_user;
+create table backup_user (
+	id int,
+	username varchar(10),
+	age int,
+	gender varchar(5),
+	country varchar(10),
+	times date
+);
+
+-- userbackup trigger 생성
+drop trigger if exists userbackup;
+
+delimiter $$
+	create trigger userbackup
+	after insert on user
+	for each row
+	begin 
+		insert into backup_user 
+		values (new.id, new.username, new.age, new.gender, new.country, curdate());
+	end $$
+delimiter ;
+
+
+-- 영화 백업
+
+-- Movie backup table
+drop table if exists backup_movie;
+create table backup_movie (
+	id	int,
+	title	VARCHAR(20),
+	overview	TEXT,
+	relese_date	date,
+	popularity	int,
+	vote_average	int,
+	country	VARCHAR(10),
+	time date
+);
+select * from backup_user;
+desc backup_user;
+
+-- Review backup table
+drop table if exists backup_review;
+create table backup_review as select * from review where 1=0;
+
+-- Movie_crew backup table
+drop table if exists backup_MC;
+create table backup_MC as select * from movie_crew where 1=0;
+
+-- Movie_actor backup table
+drop table if exists backup_MA;
+create table backup_MA as select * from movie_actor where 1=0;
+
+-- Movie_genre backup table
+drop table if exists backup_MG;
+create table backup_MG as select * from movie_genre where 1=0;
+
+
+-- trigger
+drop trigger if exists check_remove_movie;
+
+DELIMITER $$
+CREATE TRIGGER check_remove_movie
+	before delete  			
+	ON movie
+    FOR EACH ROW			
+
+BEGIN
+	INSERT INTO backup_movie
+		VALUES (old.id, old.title, old.overview, old.relese_date, old.popularity, old.vote_average, old.country, curdate());
+	INSERT INTO backup_review
+		select * from review where movie_id = old.id;
+	INSERT INTO backup_MC
+		select * from Movie_Crew where movie_id = old.id;
+	INSERT INTO backup_MA
+		select * from movie_actor where movie_id = old.id;
+	INSERT INTO backup_MG
+		select * from Movie_Genre where movie_id = old.id;	
+end $$ 
+DELIMITER ;
+
+-- procedure
+drop procedure if exists rollback_movie;
+
+delimiter $$
+create procedure rollback_movie(
+	in v_id int
+)
+	begin 
+		insert into movie select id, title, overview, relese_date, popularity, vote_average, country from backup_movie;
+		insert into review select * from backup_review;
+		insert into movie_crew select * from backup_MC;
+		insert into movie_actor select * from backup_MA;
+		insert into movie_genre  select * from backup_MG;
+		delete from backup_movie where id = v_id;
+		delete from backup_review where movie_id = v_id;
+		delete from backup_MC where movie_id = v_id;
+		delete from backup_MA where movie_id = v_id;
+		delete from backup_MG where movie_id = v_id;
+	end $$
+delimiter ;
