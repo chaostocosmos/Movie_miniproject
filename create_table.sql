@@ -47,7 +47,7 @@ CREATE TABLE Movie_Crew (
 	crew_id	int	not null
 );
 
-drop table Review;
+
 CREATE TABLE Review (
 	user_id	int	not null,
 	movie_id int	not null,
@@ -59,7 +59,6 @@ CREATE TABLE User_info (
 	Genre_id	int	not null
 );
 
-select * from User_info;
 
 
 ALTER TABLE Movie_Genre ADD CONSTRAINT PK_MOVIE_GENRE PRIMARY KEY (
@@ -169,3 +168,106 @@ REFERENCES Movie (
 );
 
 desc review;
+
+-- 외래키참조 테이블 제약조건 변경 hotfix (부모테이블 변경 시 데이터 자동 변경) review Table 제외됨 ! 
+
+-- movie_actor
+
+alter table movie_actor drop constraint FK_Movie_TO_Movie_Actor_1;
+
+alter table movie_actor drop constraint FK_Actor_TO_Movie_Actor_1;
+
+alter table movie_actor drop primary key;
+
+ALTER TABLE movie_actor ADD CONSTRAINT FK_Movie_TO_Movie_Actor_1 FOREIGN KEY (
+	movie_id
+)
+REFERENCES movie (
+	id
+)ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE movie_actor ADD CONSTRAINT FK_Actor_TO_Movie_Actor_1 FOREIGN KEY (
+	actor_id
+)
+REFERENCES actor (
+	id
+)ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+
+select * from movie_actor;
+select * from movie;
+
+desc movie_crew ;
+-- movie_crew
+
+alter table Movie_Crew drop constraint FK_Movie_TO_Movie_Crew_1;
+
+alter table Movie_Crew drop constraint FK_Crew_TO_Movie_Crew_1;
+
+alter table Movie_Crew drop primary key;
+
+ALTER TABLE Movie_Crew ADD CONSTRAINT FK_Movie_TO_Movie_Crew_1 FOREIGN KEY (
+	movie_id
+)
+REFERENCES Movie (
+	id
+)ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE Movie_Crew ADD CONSTRAINT FK_Crew_TO_Movie_Crew_1 FOREIGN KEY (
+	crew_id
+)
+REFERENCES Crew (
+	id
+)ON DELETE CASCADE ON UPDATE CASCADE;
+
+desc Movie_Genre ;
+
+-- Movie_Genre
+
+alter table Movie_Genre drop constraint FK_Movie_TO_Movie_Genre_1;
+
+alter table Movie_Genre drop constraint FK_Genre_TO_Movie_Genre_1;
+
+alter table Movie_Genre drop primary key;
+
+ALTER TABLE Movie_Genre ADD CONSTRAINT FK_Movie_TO_Movie_Genre_1 FOREIGN KEY (
+	movie_id
+)
+REFERENCES Movie (
+	id
+)ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE Movie_Genre ADD CONSTRAINT FK_Genre_TO_Movie_Genre_1 FOREIGN KEY (
+	genre_id
+)
+REFERENCES Genre (
+	id
+)ON DELETE CASCADE ON UPDATE CASCADE;
+
+desc user_info ;
+-- user_info
+
+alter table User_info drop constraint FK_user_TO_User_info_1;
+
+alter table User_info drop constraint FK_Genre_TO_User_info_1;
+
+alter table User_info drop primary key;
+
+
+ALTER TABLE User_info ADD CONSTRAINT FK_user_TO_User_info_1 FOREIGN KEY (
+	user_id
+)
+REFERENCES user (
+	id
+)ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE User_info ADD CONSTRAINT FK_Genre_TO_User_info_1 FOREIGN KEY (
+	Genre_id
+)
+REFERENCES Genre (
+	id
+)ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- 수정완료
+
