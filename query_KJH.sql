@@ -13,14 +13,22 @@ select
 		when age is null then '알수없음'
 		else '50대 이상'
 	end as ages, gender, name as genre, count(distinct u.id) as count, 
-		   group_concat(title separator ', ') as movies
-from user u, genre g, User_info ui, Movie m, Movie_Genre mg 
-where user_id = u.id and g.id = ui.genre_id = mg.genre_id and m.id = mg.movie_id 
+		   group_concat(ifnull(title,'없음') separator ', ') as movies
+from user u
+left join User_info ui 
+	on u.id = ui.user_id
+left join genre g 
+	on ui.genre_id = g.id
+left join Movie_Genre mg 
+	on g.id = mg.genre_id
+left join Movie m 
+	on mg.movie_id = m.id
 group by ages, gender, name
-order by ages, gender desc;
+order by ages, gender, movies desc;
 /* case ~ when ~ then 이용하여 나이대 분류
- * group_concat() 이용하여 컬럼의 데이터들을 하나의 열에 나열
+ * group_concat() 이용하여 컬럼의 데이터들을 하나의 열에 나열 및 null값에 문자대입
  * 이때 count(*) 이용시 합쳐진 열 개수 만큼 추가되므로 중복을 제거한 user.id를 카운트해줌
+ * left join 이용하여 영화가 존재하지 않는 row도 출력
  */
 
 
@@ -53,7 +61,8 @@ inner join Movie_Crew mc
 inner join Actor a
 	on a.id = ma.actor_id 
 inner join Crew c
-	on c.id = mc.crew_id;
+	on c.id = mc.crew_id
+order by id asc;
 /* inner join 이용해서 배우와 제작진이 일치하는 영화 검색
  * 
  */
@@ -77,7 +86,8 @@ select title,
 			   when comment like '%잼이따%' then 1 
 			   when comment like '%개추%' then 1 end) as likes,
 	count(case when comment like '%노잼%' then 1 
-			   when comment like '%싫어%' then 1 end) as dislikes
+			   when comment like '%싫어%' then 1 
+			   when comment like '%2류%' then 1 end) as dislikes
 from movie m, review r
 where m.id = r.movie_id
 group by 1
