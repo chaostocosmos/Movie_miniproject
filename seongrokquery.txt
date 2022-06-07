@@ -1,0 +1,66 @@
+-- 1. 범죄도시2에 출연한 배우 정보를 알고 싶어졌다 영화 번호 1번에 출연한 배우들의 정보를 뽑아보자
+-- 테스트를 위함 임의의 값
+insert into movie_actor values (1, 1),(1, 4),(1,12),(1,13),(1,14),(1,15),(1,16);
+rollback;
+
+select a.name, a.profile_path, a.Moive_character 
+from actor a, movie m, movie_actor ma
+where a.id = ma.actor_id and m.id = ma.movie_id ;
+
+
+-- 2.친구들과 영화를 보다가 오늘의 10년전에 개봏한 영화가 뭐가 있을까라는 의문을 가지게 되어 10년전 개봉한 영화들의 정보를찾아보게 되었다
+select * 
+from movie 
+where year(relese_date) = year(DATE_ADD(NOW(), INTERVAL -10 YEAR));
+
+-- 3.범죄도시2를 보고 마동석의 팬이 된 'KIM'은 마동석이 나온 영화들을 모두 찾아보기로 했다. 마동석이 나온 영화를 모두 찾아보고 영화중 평점이 가장 높은 영화에 정보들을 검색한 후
+-- 리뷰에 10점을 주고 리뷰를 달아본다
+insert into movie_actor values(1,1), (11,1), (12,1), (13,1), (14,1), (15,1);
+rollback;
+
+select m.id, m.popularity, m.title  
+from movie m , actor a , movie_actor ma
+where m.id = ma.movie_id and a.id  = ma.actor_id 
+order by m.popularity desc; 
+
+
+insert into review values(1,1,10,'역시 마형이 짱이라니깐');
+
+select * from review;
+
+
+-- 4. 특정 배우의 팬/또는 안티팬이 동일한 계정에 반복해서 동일한 댓글을 이용해서 반복적으로 동일한 댓글을 다는 행위를 제재하기 위해 동일 계정에 동일한 댓글이 4번이상 달리면 
+-- 댓글을 단 계정에 대한 정보를 확인하기로 하였다. 또 4번 이상 단 댓글은 모두 삭제하기로 하였다.
+select * from review r;
+rollback;
+
+-- 동일한
+select r.user_id, count(r.user_id) ,r.movie_id, count(r.movie_id), r.comment , count(r.comment)
+from review r 
+group by r.user_id
+having count(r.comment) >= 4;
+
+delete 
+from review 
+where movie_id =
+( 
+	select movie_id 
+	from 
+	(select movie_id from review 
+	group by user_id ,comment 
+	having count(*) >= 4 ) as tmp
+);
+-- 5. 배우/감독/ 영화를 통해 개봉일의 년도와 월에서의 예매 점유율 분석
+insert into movie_actor values(1,1), (11,1), (12,1), (13,1), (14,1), (15,1), (3,3); 
+insert into movie_crew values (1,1), (11,2), (12,3),(13,4), (14,5), (15,6), (3,10);
+rollback;
+-- 5월 1달간 영화의 점유율을 구하기 위해 5월 사이 개봉한 영화 중 (해당 영화의 관객수/5월 개봉 영화의 관객수) 를 구한다
+SELECT title, crew , actor , (total/m2.summ1)*100 AS 퍼센트, total, m1.relese_date 
+FROM (  SELECT movie.title , movie.popularity  AS total , crew.name as crew , actor.name as actor, relese_date
+        FROM movie , crew , actor , Movie_Actor , Movie_Crew
+        where movie.relese_date between '2022-05-01' and '2022-05-31' and movie_actor.movie_id = movie.id and movie_actor.actor_id = actor.id  and movie_crew.movie_id = movie.id and crew.id = movie_crew.crew_id
+        GROUP BY title) AS m1, 
+        (SELECT sum(movie.popularity) AS summ1 FROM movie
+        where movie.relese_date between '2022-05-01' and '2022-05-31') AS  m2
+GROUP BY title
+ORDER BY 퍼센트 desc;
